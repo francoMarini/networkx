@@ -67,6 +67,7 @@ def generic_bfs_edges(G, source, neighbors=None, depth_limit=None):
         try:
             child = next(children)
             if child not in visited:
+                print("Sto sul nodo %s. Aggiungo in frontiera il nodo %s." %(parent,child))
                 yield parent, child
                 visited.add(child)
                 if depth_now > 1:
