@@ -51,34 +51,22 @@ def greedy_path(G, source, target, heuristic=None, weight='weight'):
                 path.append(node)
                 node = explored[node]
             path.reverse()
+            print("Il costo del cammino è %d Km." % dist)
             return path
 
         if curnode in explored:
-            # Do not override the parent of starting node
-            if explored[curnode] is None:
-                continue
-
-            # Skip bad paths that were enqueued before finding a better one
-            qcost, h = enqueued[curnode]
-            if qcost < dist:
-                continue
+            continue
 
         explored[curnode] = parent
 
         for neighbor, w in G[curnode].items():
             #Togliendo '+ weight(curnode, neighbor, w)', ncost risulta essere sempre pari a 0'
-            ncost = dist
+            ncost = dist + weight(curnode, neighbor, w)
             if neighbor in enqueued:
-                qcost, h = enqueued[neighbor]
-                # if qcost <= ncost, a less costly path from the
-                # neighbor to the source was already determined.
-                # Therefore, we won't attempt to push this neighbor
-                # to the queue
-                if qcost <= ncost:
-                    continue
+                    _ , h = enqueued[neighbor]
             else:
                 h = heuristic(neighbor, target)
             enqueued[neighbor] = ncost, h
-            push(queue, (ncost + h, next(c), neighbor, ncost, curnode))
+            push(queue, (h, next(c), neighbor, ncost, curnode))
 
     raise nx.NetworkXNoPath(f"Node {target} not reachable from {source}")
